@@ -1,12 +1,4 @@
 --- 
-# - name: "Disable root login"
-#   lineinfile:
-#     path: /etc/ssh/sshd_config
-#     regexp: "^PermitRootLogin"
-#     line: "PermitRootLogin no"
-#   become: true
-#   notify: restart ssh
-
 - name: "Ensure SSH service is running"
   service:
     name: ssh

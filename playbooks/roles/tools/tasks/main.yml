@@ -1,0 +1,11 @@
+---
+- name: "Install useful tools"
+  apt:
+    pkg:
+      - curl
+      - git
+      - ufw
+      - vim
+      - nano
+    state: latest
+    update_cache: true

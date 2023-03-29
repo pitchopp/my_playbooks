@@ -6,22 +6,25 @@
 - name: Create user
   user:
     name: "{{ username }}"
-    home: "{{ home }}"
-    shell: /bin/bash
+    state: present
     groups: sudo
-    append: yes
+    shell: /bin/bash
+    append: true
+    create_home: true
+    home: "{{ home }}"
 
-- name: make user sudoer
-  shell: 
-    cmd: echo "{{username}} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/{{username}}
-  become: true
+- name: Setup passwordless sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^%sudo'
+    line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
 
-- name: Create home directory
-  file:
-    path: "{{ home }}"
-    state: directory
-    owner: "{{ username }}"
-    group: "{{ username }}"
+# - name: make user sudoer
+#   shell: 
+#     cmd: echo "{{username}} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/{{username}}
+#   become: true
 
 - name: create .ssh folder
   file:
@@ -30,9 +33,16 @@
     owner: "{{username}}"
     group: "{{username}}"
 
-- name: copy authorized keys
+- name: Copy authorized keys
   copy:
     remote_src: true
     src: /root/.ssh/authorized_keys
     dest: "{{home}}/.ssh/authorized_keys"
   become: true
+
+- name: Disable password authentication for root
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'

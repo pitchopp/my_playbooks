@@ -6,5 +6,5 @@
     - firewall
     - user
     - ssh
+    - tools
     - nginx
-    - monitoring
