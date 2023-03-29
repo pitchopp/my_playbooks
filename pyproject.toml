@@ -1,0 +1,11 @@
+[project]
+name = "playbooks"
+version = "0.1.0"
+description = "ansible playbooks for vps setup"
+dependencies = [
+    "ansible"
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

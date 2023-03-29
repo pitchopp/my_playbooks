@@ -1,0 +1,10 @@
+---
+- name: "Install packages and configure server"
+  hosts: contabo_vps
+  become: true
+  roles:
+    - firewall
+    - user
+    - ssh
+    - nginx
+    - monitoring

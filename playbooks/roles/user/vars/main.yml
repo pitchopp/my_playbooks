@@ -1,0 +1,3 @@
+---
+username: groot
+home: /home/{{username}}
