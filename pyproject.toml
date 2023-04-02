@@ -6,6 +6,9 @@ dependencies = [
     "ansible"
 ]
 
+[tool.setuptools]
+packages = ["playbooks"]
+
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
