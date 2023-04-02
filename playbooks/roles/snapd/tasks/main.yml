@@ -1,0 +1,12 @@
+---
+- name: Install snapd
+  become: true
+  apt:
+    name: snapd
+    state: present
+
+- name: Update snapd
+  become: true
+  shell: |
+    snap install core
+    snap refresh core

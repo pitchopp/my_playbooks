@@ -1,10 +1,19 @@
 ---
+- name: Setup a basic firewall with ufw
+  hosts: contabo_vps
+  roles:
+    - firewall
+
+- name: Create user groot
+  hosts: contabo_vps
+  roles:
+    - create-user
+  vars:
+    - username: groot
+
 - name: "Install packages and configure server"
   hosts: contabo_vps
   become: true
   roles:
-    - firewall
-    - user
     - ssh
     - tools
-    - nginx

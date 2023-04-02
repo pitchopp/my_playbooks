@@ -1,0 +1,76 @@
+---
+- name: Clone repository
+  become_user: "{{ app_user }}"
+  git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ app_folder }}"
+    force: yes
+
+- name: "Config poetry"
+  become_user: "{{ app_user }}"
+  shell:
+    cmd: "{{ poetry_path }} config virtualenvs.in-project true"
+
+- name: Install application dependencies
+  become_user: "{{ app_user }}"
+  shell:
+    cmd: "{{ poetry_path }} install -E server"
+    chdir: "{{ app_folder }}"
+
+# - name: Copy Gunicorn start script
+#   become_user: "{{ app_user }}"
+#   template:
+#     src: templates/gunicorn_start.j2
+#     dest: "{{ app_folder }}/gunicorn_start"
+#     mode: '0755'
+
+# - name: Creates socket directory
+#   become_user: "{{ app_user }}"
+#   file:
+#     path: "{{ app_folder }}/run"
+#     state: directory
+
+# - name: Creates logs directory
+#   become_user: "{{ app_user }}"
+#   file:
+#     path: "{{ app_folder }}/logs"
+#     state: directory
+
+- name: Copy systemd conf
+  template:
+    src: templates/systemd.conf.j2
+    dest: /etc/systemd/system/{{ app_name }}.service
+
+- name: Start and enable {{ app_name }} service
+  become: true
+  systemd:
+    name: "{{ app_name}}"
+    state: started
+    enabled: yes
+
+- name: Check {{ app_name }} service status
+  become: true
+  systemd:
+    name: "{{ app_name }}"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+  register: app_status
+
+# - name: Display {{ app_name }} service status
+#   debug:
+#     var: app_status
+
+- name: Configure NGINX
+  become_user: "{{ app_user }}"
+  template:
+    src: templates/nginx.conf.j2
+    dest: "/etc/nginx/sites-available/{{ app_name }}"
+  notify:
+    - Reload NGINX
+
+- name: Create symbolic link for Nginx site
+  file:
+    src: "/etc/nginx/sites-available/{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+    state: link

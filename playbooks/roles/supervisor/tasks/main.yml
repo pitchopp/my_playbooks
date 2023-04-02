@@ -1,0 +1,9 @@
+- name: Install Supervisor
+  apt:
+    name: supervisor
+    state: present
+
+- name: Restart Supervisor
+  systemd:
+    name: supervisor
+    state: restarted

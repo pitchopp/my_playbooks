@@ -1,0 +1,21 @@
+[Unit]
+
+Description=Gunicorn Daemon for FastAPI example
+
+After=network.target
+
+
+[Service]
+
+User={{ app_user }}
+
+Group=www-data
+
+WorkingDirectory={{ app_folder }}
+
+ExecStart={{ poetry_path }} run gunicorn -c gunicorn_conf.py app.main:app
+
+
+[Install]
+
+WantedBy=multi-user.target

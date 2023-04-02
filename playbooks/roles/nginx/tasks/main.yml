@@ -1,11 +1,21 @@
----
-- name: "Install Nginx"
+- name: Install Nginx web server
+  become: true
   apt:
     name: nginx
     state: present
 
-- name: "Ensure Nginx service is running"
-  service:
+- name: Start and enable Nginx service
+  become: true
+  systemd:
     name: nginx
     state: started
-    enabled: true
+    enabled: yes
+
+- name: ufw allow Nginx Full
+  ufw:
+    rule: allow
+    name: Nginx Full
+
+- name: reload ufw
+  ufw:
+    state: reloaded

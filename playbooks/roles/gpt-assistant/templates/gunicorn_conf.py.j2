@@ -1,0 +1,13 @@
+# gunicorn_conf.py
+from multiprocessing import cpu_count
+
+bind = "127.0.0.1:1658"
+
+# Worker Options
+workers = cpu_count() + 1
+worker_class = 'uvicorn.workers.UvicornWorker'
+
+# Logging Options
+loglevel = '{{ gunicorn_log_level }}'
+accesslog = '{{ app_folder }}/access_log'
+errorlog =  '{{ app_folder }}/error_log'

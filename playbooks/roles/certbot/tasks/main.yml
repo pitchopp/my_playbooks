@@ -1,0 +1,25 @@
+- name: Install Certbot and Certbot Nginx plugin
+  become: true
+  apt:
+    name:
+      - certbot
+      - python3-certbot-nginx
+    state: present
+
+- name: Obtain SSL certificate for domain {{ certbot_domain }}
+  become: true
+  command: certbot --nginx --non-interactive --agree-tos --email {{ certbot_email }} -d {{ certbot_domain }}
+
+- name: Restart Nginx
+  become: true
+  systemd:
+    name: nginx
+    state: restarted
+
+- name: Schedule automatic renewal of SSL certificate
+  become: true
+  cron:
+    name: "Renew SSL certificate"
+    hour: "3"
+    minute: "0"
+    job: "certbot renew --quiet"

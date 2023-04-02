@@ -1,0 +1,29 @@
+- name: Check if poetry is installed
+  ansible.builtin.command: "{{ poetry_path }}"
+  register: poetry_cmd
+  changed_when: false
+  ignore_errors: true
+
+
+- name: Check poetry version
+  shell: "if ! {{ poetry_path }} --version | grep -q '{{ poetry_version }}'; then exit 1; fi"
+  register: poetry_v
+  when: poetry_cmd is succeeded
+  changed_when: false
+  ignore_errors: true
+
+- name: Download poetry installer
+  ansible.builtin.get_url:
+    url: https://install.python-poetry.org
+    dest: /tmp/install-poetry.py
+    mode: "0400"
+    timeout: 20
+  when: (poetry_cmd is failed) or (poetry_v is failed)
+
+- name: Uninstall poetry
+  shell: "POETRY_HOME={{ poetry_home }} {{ poetry_python_path }} /tmp/install-poetry.py --uninstall"
+  when: (poetry_cmd is succeeded) and (poetry_v is failed)
+
+- name: Install poetry
+  shell: "POETRY_HOME={{ poetry_home }} {{ poetry_python_path }} /tmp/install-poetry.py --version {{ poetry_version }}"
+  when: (poetry_cmd is failed) or (poetry_v is failed)

@@ -1,0 +1,4 @@
+poetry_version: 1.4.1
+poetry_python_path: "python3.10"
+poetry_home: "{{ home }}/.local"
+poetry_path: "{{ poetry_home }}/bin/poetry"
