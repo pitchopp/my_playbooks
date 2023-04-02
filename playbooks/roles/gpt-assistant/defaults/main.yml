@@ -1,5 +1,5 @@
-githubuser: pitchopp
-githubpassword: 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
+githubuser: "{{ GITHUB_USER }}"
+githubpassword: "{{ GITHUB_PASSWORD }}"
 app_name: gpt-assistant
 home: "/home/{{ app_user }}"
 app_folder: "{{ home }}/{{ app_name }}"

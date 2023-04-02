@@ -1,5 +1,6 @@
 .galaxy/roles
 .galaxy/collections
+.vaultpass
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

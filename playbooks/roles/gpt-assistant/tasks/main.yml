@@ -1,10 +1,35 @@
 ---
+- name: Disable git owernship check
+  community.general.git_config:
+    name: safe.directory
+    scope: global
+    value: "{{ app_folder }}"
+
 - name: Clone repository
-  become_user: "{{ app_user }}"
   git:
     repo: "{{ git_repo_url }}"
     dest: "{{ app_folder }}"
     force: yes
+  register: git_output
+
+- name: Set ownership of app folder
+  become: true
+  file:
+    path: "{{ app_folder }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    recurse: yes
+  when: git_output.changed
+
+- name: Copy .env file
+  template:
+    src: templates/.env.j2
+    dest: "{{ app_folder }}/.env"
+
+- name: Copy gunicorn_conf.py file
+  template:
+    src: templates/gunicorn_conf.py.j2
+    dest: "{{ app_folder }}/gunicorn_conf.py"
 
 - name: "Config poetry"
   become_user: "{{ app_user }}"
@@ -16,25 +41,6 @@
   shell:
     cmd: "{{ poetry_path }} install -E server"
     chdir: "{{ app_folder }}"
-
-# - name: Copy Gunicorn start script
-#   become_user: "{{ app_user }}"
-#   template:
-#     src: templates/gunicorn_start.j2
-#     dest: "{{ app_folder }}/gunicorn_start"
-#     mode: '0755'
-
-# - name: Creates socket directory
-#   become_user: "{{ app_user }}"
-#   file:
-#     path: "{{ app_folder }}/run"
-#     state: directory
-
-# - name: Creates logs directory
-#   become_user: "{{ app_user }}"
-#   file:
-#     path: "{{ app_folder }}/logs"
-#     state: directory
 
 - name: Copy systemd conf
   template:
@@ -56,10 +62,6 @@
     enabled: yes
     daemon_reload: yes
   register: app_status
-
-# - name: Display {{ app_name }} service status
-#   debug:
-#     var: app_status
 
 - name: Configure NGINX
   become_user: "{{ app_user }}"

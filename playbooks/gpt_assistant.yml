@@ -22,11 +22,11 @@
   hosts: contabo_vps
   roles:
     - nginx
-    # - supervisor
-    # - snapd
     - poetry
     - gpt-assistant
     - certbot
+  vars_files:
+    - ../secrets.yml
   vars:
     - app_user: gptassistant
     - poetry_home: "/home/gptassistant/.local"
@@ -34,10 +34,3 @@
     - server_domain: gpt-assistant.sghir.me
     - certbot_email: amine@sghir.me
     - certbot_domain: "{{ server_domain }}"
-  # vars_prompt: 
-  #   - name: "githubuser" 
-  #     prompt: "Enter your github username" 
-  #     private: no 
-  #   - name: "githubpassword" 
-  #     prompt: "Enter your github password" 
-  #     private: yes
