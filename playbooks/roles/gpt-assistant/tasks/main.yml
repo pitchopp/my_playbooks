@@ -47,32 +47,24 @@
     src: templates/systemd.conf.j2
     dest: /etc/systemd/system/{{ app_name }}.service
 
-- name: Start and enable {{ app_name }} service
-  become: true
-  systemd:
-    name: "{{ app_name}}"
-    state: started
-    enabled: yes
-
 - name: Check {{ app_name }} service status
   become: true
   systemd:
     name: "{{ app_name }}"
-    state: started
+    state: restarted
     enabled: yes
     daemon_reload: yes
-  register: app_status
 
 - name: Configure NGINX
   become_user: "{{ app_user }}"
   template:
     src: templates/nginx.conf.j2
     dest: "/etc/nginx/sites-available/{{ app_name }}"
-  notify:
-    - Reload NGINX
 
 - name: Create symbolic link for Nginx site
   file:
     src: "/etc/nginx/sites-available/{{ app_name }}"
     dest: "/etc/nginx/sites-enabled/{{ app_name }}"
     state: link
+  notify:
+    - Reload NGINX
