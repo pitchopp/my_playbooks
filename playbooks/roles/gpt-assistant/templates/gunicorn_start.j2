@@ -11,7 +11,7 @@ LOG_LEVEL={{ gunicorn_log_level }}
 
 cd $DIR
 
-exec {{ poetry_path }} run gunicorn main:app \
+exec {{ poetry_path }} run gunicorn assistant.api:app \
   --name $NAME \
   --workers $WORKERS \
   --worker-class $WORKER_CLASS \
