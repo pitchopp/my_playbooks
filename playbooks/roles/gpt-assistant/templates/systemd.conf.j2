@@ -13,7 +13,7 @@ Group=www-data
 
 WorkingDirectory={{ app_folder }}
 
-ExecStart={{ poetry_path }} run gunicorn -c gunicorn_conf.py app.main:app
+ExecStart={{ poetry_path }} run gunicorn -c gunicorn_conf.py assistant.api:app
 
 
 [Install]
