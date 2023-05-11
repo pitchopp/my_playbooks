@@ -1,0 +1,16 @@
+---
+- name: "Deploy chella.tech"
+  hosts: contabo_vps
+  become: true
+  roles:
+    - create-user
+    - nginx
+    - chella-tech
+    - certbot
+  vars_files:
+    - ../secrets.yml
+  vars:
+    - username: chellatech
+    - server_domain: chella.tech
+    - certbot_email: contact@chella.tech
+    - certbot_domain: "{{ server_domain }}"

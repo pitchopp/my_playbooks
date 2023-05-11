@@ -1,0 +1,42 @@
+---
+- name: Clone website repository
+  git:
+    repo: "{{ git_repo }}"
+    dest: "/home/{{ username }}/chella-tech"
+    force: yes
+  become: yes
+  become_user: "{{ username }}"
+
+- name: Copy website files to server
+  copy:
+    remote_src: true
+    src: "/home/{{ username }}/chella-tech/"
+    dest: "{{ root_dir }}"
+    mode: preserve
+
+# - name: Change ownership of website directory to www-data
+#   file:
+#     path: "{{ root_dir }}"
+#     owner: www-data
+#     group: www-data
+#     recurse: yes
+
+- name: Apply Nginx template
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/{{ website_name }}
+
+- name: Enable site configuration
+  file:
+    src: /etc/nginx/sites-available/{{ website_name }}
+    dest: /etc/nginx/sites-enabled/{{ website_name }}
+    state: link
+
+- name: Check nginx configuration
+  command: nginx -t
+  changed_when: false
+
+- name: Restart Nginx
+  systemd:
+    name: nginx
+    state: restarted

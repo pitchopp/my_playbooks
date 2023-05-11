@@ -1,0 +1,5 @@
+---
+git_repo: https://github.com/pitchopp/chella-tech.git
+server_domain: chella.tech
+website_name: "{{ server_domain }}"
+root_dir: /var/www/html/{{ server_domain }}
