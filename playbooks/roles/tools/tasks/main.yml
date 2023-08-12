@@ -7,5 +7,6 @@
       - ufw
       - vim
       - nano
+      - dnf
     state: latest
     update_cache: true

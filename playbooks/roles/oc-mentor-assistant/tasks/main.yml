@@ -1,0 +1,119 @@
+---
+- name: Disable git owernship check
+  community.general.git_config:
+    name: safe.directory
+    scope: global
+    value: "{{ app_folder }}"
+
+- name: Clone repository
+  git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ app_folder }}"
+    force: yes
+  register: git_output
+
+- name: Set ownership of app folder
+  become: true
+  file:
+    path: "{{ app_folder }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    recurse: yes
+  when: git_output.changed
+
+- name: Copy .env file
+  template:
+    src: templates/.env.j2
+    dest: "{{ app_folder }}/.env"
+
+- name: "Config poetry"
+  become_user: "{{ app_user }}"
+  shell:
+    cmd: "{{ poetry_path }} config virtualenvs.in-project true"
+
+- name: Install application dependencies
+  become_user: "{{ app_user }}"
+  shell:
+    cmd: "{{ poetry_path }} install -E server"
+    chdir: "{{ app_folder }}"
+
+- name: Get virtualenv path
+  shell: 
+    cmd: "{{ poetry_path }} env info --path"
+    chdir: "{{ app_folder }}"
+  register: venv_path_output
+
+- set_fact:
+    venv_path: "{{ venv_path_output.stdout }}"
+
+- name: migrate database
+  django_manage:
+    command: migrate
+    project_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+
+- name: collect static files
+  django_manage:
+    command: collectstatic --noinput
+    project_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+
+- name: Check if django superuser exists
+  django_manage:
+    command: shell -c 'import sys; from django.contrib.auth.models import User; sys.exit(0 if User.objects.filter(username="{{ superuser_username }}").count() > 0 else 1)'
+    project_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+  register: checksuperuser
+  ignore_errors: True
+  changed_when: False      
+
+- name: django create superuser
+  django_manage:
+    command: "createsuperuser --noinput --username={{ superuser_username }} --email={{ superuser_email }}"
+    app_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+  environment:
+    DJANGO_SUPERUSER_PASSWORD: "{{ superuser_password }}"
+  when: checksuperuser.failed
+
+- name: Copy systemd socket file
+  template:
+    src: templates/gunicorn.socket.j2
+    dest: /etc/systemd/system/{{ app_name }}.socket
+
+- name: Copy systemd service file
+  template:
+    src: templates/gunicorn.service.j2
+    dest: /etc/systemd/system/{{ app_name }}.service
+
+- name: Enable gunicorn socket
+  systemd:
+    name: "{{ app_name }}.socket"
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Check {{ app_name }} service status
+  become: true
+  systemd:
+    name: "{{ app_name }}"
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+
+- name: Configure NGINX
+  become_user: "{{ app_user }}"
+  template:
+    src: templates/nginx.conf.j2
+    dest: "/etc/nginx/sites-available/{{ app_name }}"
+
+- name: Create symbolic link for Nginx site
+  file:
+    src: "/etc/nginx/sites-available/{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+    state: link
+
+- name: Reload NGINX
+  service:
+    name: nginx
+    state: reloaded

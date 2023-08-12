@@ -1,0 +1,6 @@
+---
+# handlers file for playbooks/roles/postgresql
+- name: restart postgres
+  service: 
+    name: postgresql
+    state: restarted

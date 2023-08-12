@@ -1,0 +1,45 @@
+---
+- name: Create user ocmentorassistant
+  hosts: contabo_vps
+  become: true
+  roles:
+    - create-user
+  vars:
+    - username: ocmentorassistant
+
+- name: Setup pyenv
+  hosts: contabo_vps
+  roles:
+    - staticdev.pyenv
+  vars:
+    - pyenv_python_versions:
+      - 3.10.6
+    - pyenv_global:
+      - 3.10.6
+    - pyenv_env: system
+
+- name: Setup nginx
+  hosts: contabo_vps
+  roles:
+    - nginx
+
+- name: "Deploy OC Mentor Assistant app"
+  hosts: contabo_vps
+  roles:
+    - postgresql
+    - poetry
+    - oc-mentor-assistant
+    - certbot
+  vars_files:
+    - ../../secrets.yml
+  vars:
+    - app_user: ocmentorassistant
+    - create_db: true
+    - db_name: "{{ app_user }}"
+    - db_user: "{{ app_user }}"
+    - db_password: "{{ OCMENTORASSISTANT_DB_PASSWORD }}"
+    - poetry_home: "/home/{{app_user}}/.local"
+    - poetry_path: "{{ poetry_home }}/bin/poetry"
+    - server_domain: mentor.chella.tech
+    - certbot_email: contact@chella.tech
+    - certbot_domain: "{{ server_domain }}"

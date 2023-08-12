@@ -1,3 +1,4 @@
+---
 githubuser: "{{ GITHUB_USER }}"
 githubpassword: "{{ GITHUB_PASSWORD }}"
 app_name: gpt-assistant

@@ -26,10 +26,10 @@
     - gpt-assistant
     - certbot
   vars_files:
-    - ../secrets.yml
+    - ../../secrets.yml
   vars:
     - app_user: gptassistant
-    - poetry_home: "/home/gptassistant/.local"
+    - poetry_home: "/home/{{app_user}}/.local"
     - poetry_path: "{{ poetry_home }}/bin/poetry"
     - server_domain: gpt-assistant.sghir.me
     - certbot_email: amine@sghir.me

@@ -1,0 +1,6 @@
+---
+# defaults file for playbooks/roles/postgresql
+create_db: false
+db_user: ""
+db_password: ""
+db_name: ""
