@@ -1,0 +1,36 @@
+---
+- name: Create user gptassistant
+  hosts: contabo_vps
+  become: true
+  roles:
+    - create-user
+  vars:
+    - username: gptassistant
+
+- name: Setup pyenv
+  hosts: contabo_vps
+  roles:
+    - staticdev.pyenv
+  vars:
+    - pyenv_python_versions:
+      - 3.10.6
+    - pyenv_global:
+      - 3.10.6
+    - pyenv_env: system
+
+- name: "Deploy GPT Assistant"
+  hosts: contabo_vps
+  roles:
+    - nginx
+    - poetry
+    - gpt-assistant
+    - certbot
+  vars_files:
+    - ../secrets.yml
+  vars:
+    - app_user: gptassistant
+    - poetry_home: "/home/gptassistant/.local"
+    - poetry_path: "{{ poetry_home }}/bin/poetry"
+    - server_domain: gpt-assistant.chella.tech
+    - certbot_email: contact@chella.tech
+    - certbot_domain: "{{ server_domain }}"
