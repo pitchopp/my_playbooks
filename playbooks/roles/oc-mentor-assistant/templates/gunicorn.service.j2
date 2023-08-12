@@ -1,0 +1,17 @@
+[Unit]
+Description=gunicorn daemon for {{ app_name }} app
+Requires={{ app_name }}.socket
+After=network.target
+
+[Service]
+User={{ app_user }}
+Group=www-data
+WorkingDirectory={{ app_folder }}
+ExecStart={{ poetry_path }} run gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/{{ app_name }}.sock \
+          oc_mentor_assistant.wsgi:application
+
+[Install]
+WantedBy=multi-user.target

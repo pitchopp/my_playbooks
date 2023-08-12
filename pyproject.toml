@@ -3,8 +3,13 @@ name = "playbooks"
 version = "0.1.0"
 description = "ansible playbooks for vps setup"
 dependencies = [
-    "ansible"
+    "ansible==7.4.0",
+    "click==8.1.6",
+    "simple-term-menu==1.6.1"
 ]
+
+[project.scripts]
+vd = "playbooks.cli:vd"
 
 [tool.setuptools]
 packages = ["playbooks"]
