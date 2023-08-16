@@ -9,9 +9,11 @@ from simple_term_menu import TerminalMenu
 def vd():
     """vps deployer"""
 
+
 @vd.command('deploy')
 @click.argument('app', required=False)
-def deploy(app : str):
+@click.option('--ssh-key', '-k', help='SSH key to use for deployment')
+def deploy(app : str, ssh_key : str):
     """Deploy an app."""
     click.echo()
     if not app:
@@ -32,6 +34,8 @@ def deploy(app : str):
     click.echo()
     click.echo(c.Fore.BLUE + "Deploying " + c.Style.BRIGHT + app + c.Style.RESET_ALL + c.Fore.BLUE + '...' + c.Fore.RESET)
     cmd = ['ansible-playbook', f'playbooks/apps/{app}.yml']
+    if ssh_key:
+        cmd += ['--private-key', ssh_key]
     click.echo()
     click.echo(c.Style.DIM + '  > ' + ' '.join(cmd) + c.Style.RESET_ALL)
     subprocess.call(cmd)
