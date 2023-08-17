@@ -38,8 +38,9 @@ def deploy(app : str, ssh_key : str):
         cmd += ['--private-key', ssh_key]
     click.echo()
     click.echo(c.Style.DIM + '  > ' + ' '.join(cmd) + c.Style.RESET_ALL)
-    subprocess.call(cmd)
+    rc = subprocess.call(cmd)
     click.echo()
+    exit(rc)
 
 
 def _list_apps():
