@@ -61,3 +61,14 @@ def list_apps():
             click.echo(c.Fore.CYAN + "- " + app + c.Fore.RESET)
     
     click.echo()
+
+@vd.command('init')
+def init():
+    """Initilize vps server."""
+    click.echo()
+    click.echo(c.Fore.BLUE + "Initializing server..." + c.Fore.RESET)
+    click.echo()
+    click.echo(c.Style.DIM + '  > ' + 'ansible-playbook playbooks/init_vps.yml' + c.Style.RESET_ALL)
+    rc = subprocess.call(['ansible-playbook', 'playbooks/init_vps.yml'])
+    click.echo()
+    exit(rc)

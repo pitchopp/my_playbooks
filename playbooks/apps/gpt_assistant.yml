@@ -31,6 +31,6 @@
     - app_user: gptassistant
     - poetry_home: "/home/{{app_user}}/.local"
     - poetry_path: "{{ poetry_home }}/bin/poetry"
-    - server_domain: gpt-assistant.sghir.me
-    - certbot_email: amine@sghir.me
+    - server_domain: gpt-assistant.chella.tech
+    - certbot_email: contact@chella.tech
     - certbot_domain: "{{ server_domain }}"

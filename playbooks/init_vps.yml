@@ -25,4 +25,7 @@
     - name: Add SSH key to authorized_keys
       authorized_key:
         user: root
-        key: "{{ lookup('file', '../ssh_keys/github_actions.pub') }}"
+        state: present
+        key: "{{ lookup('file', item) }}"
+      with_fileglob:
+        - "../ssh_keys/*"
