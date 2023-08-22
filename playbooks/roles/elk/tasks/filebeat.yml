@@ -10,6 +10,9 @@
     dest: /etc/filebeat/filebeat.yml
   notify: Restart Filebeat
 
+- name: Flush handlers
+  meta: flush_handlers
+
 - name: Enable system module
   shell: filebeat modules enable system
 
