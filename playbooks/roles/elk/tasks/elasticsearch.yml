@@ -24,6 +24,9 @@
     state: started
     enabled: yes
 
+- name: Flush handlers
+  meta: flush_handlers
+
 - name: Test Elasticsearch status
   uri:
     url: http://localhost:{{ elasticsearch_port }}
