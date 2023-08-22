@@ -31,3 +31,4 @@
   until: es_response.status == 200
   retries: 10
   delay: 5
+  notify: Restart Elasticsearch
