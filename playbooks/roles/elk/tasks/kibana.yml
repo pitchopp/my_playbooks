@@ -1,0 +1,32 @@
+---
+- name: Install Kibana
+  apt:
+    name: kibana
+    state: present
+
+- name: Start Kibana service
+  systemd:
+    name: kibana
+    state: started
+    enabled: yes
+
+- name: Create Nginx configuration for Kibana
+  template:
+    src: kibana_nginx_conf.j2
+    dest: "/etc/nginx/sites-available/{{ kibana_domain }}"
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx configuration
+  file:
+    src: "/etc/nginx/sites-available/{{ kibana_domain }}"
+    dest: "/etc/nginx/sites-enabled/{{ kibana_domain }}"
+    state: link
+  notify:
+    - Reload Nginx
+
+- name: Create Kibana admin user
+  shell: echo "{{ KIBANA_USER }}:$(echo '{{ KIBANA_PASSWORD }}' | openssl passwd -apr1 -stdin)" | sudo tee -a /etc/nginx/htpasswd.users
+  register: kibana_admin_user
+  become: true
+  when: kibana_admin_user is not defined

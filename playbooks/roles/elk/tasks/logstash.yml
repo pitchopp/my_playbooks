@@ -1,0 +1,24 @@
+---
+- name: Install Logstash
+  apt:
+    name: logstash
+    state: present
+
+- name: Create Beats input configuration
+  template:
+    src: beats_input_config.j2
+    dest: /etc/logstash/conf.d/02-beats-input.conf
+
+- name: Create Elasticsearch output configuration
+  template:
+    src: elasticsearch_output_config.j2
+    dest: /etc/logstash/conf.d/30-elasticsearch-output.conf
+
+- name: Test Logstash configuration
+  shell: sudo -u logstash /usr/share/logstash/bin/logstash --path.settings /etc/logstash -t
+
+- name: Start and enable Logstash service
+  systemd:
+    name: logstash
+    state: started
+    enabled: yes

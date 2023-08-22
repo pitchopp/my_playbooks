@@ -1,0 +1,15 @@
+---
+- name: Reload Nginx
+  systemd:
+    name: nginx
+    state: reloaded
+
+- name: Restart Filebeat
+  systemd:
+    name: filebeat
+    state: restarted
+
+- name: Restart Elasticsearch
+  systemd:
+    name: elasticsearch
+    state: restarted

@@ -1,0 +1,29 @@
+---
+- name: Install Filebeat
+  apt:
+    name: filebeat
+    state: present
+
+- name: Configure Filebeat input
+  template:
+    src: filebeat_input_config.j2
+    dest: /etc/filebeat/filebeat.yml
+  notify: Restart Filebeat
+
+- name: Enable system module
+  shell: filebeat modules enable system
+
+- name: Setup Filebeat pipelines
+  shell: filebeat setup --pipelines --modules system
+
+- name: Setup Filebeat index
+  shell: filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:{{ elasticsearch_port }}"]'
+
+- name: Setup Filebeat dashboards
+  shell: sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:{{ elasticsearch_port }}'] -E setup.kibana.host=localhost:{{ kibana_port }}
+
+- name: Start and enable Filebeat service
+  systemd:
+    name: filebeat
+    state: started
+    enabled: yes
