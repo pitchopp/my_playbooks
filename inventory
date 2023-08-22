@@ -1,2 +1,5 @@
 [contabo_vps]
 193.203.15.5
+
+[debian_test]
+test_container ansible_connection=docker ansible_user=root
