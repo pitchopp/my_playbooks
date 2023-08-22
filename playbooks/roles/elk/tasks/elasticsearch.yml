@@ -1,0 +1,33 @@
+---
+- name: Import GPG key for Elasticsearch
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Elasticsearch APT repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/7.x/apt stable main"
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Elasticsearch
+  apt:
+    name: elasticsearch
+    state: present
+
+- name: Start Elasticsearch service
+  systemd:
+    name: elasticsearch
+    state: started
+    enabled: yes
+
+- name: Test Elasticsearch status
+  uri:
+    url: http://localhost:{{ elasticsearch_port }}
+  register: es_response
+  until: es_response.status == 200
+  retries: 10
+  delay: 5
