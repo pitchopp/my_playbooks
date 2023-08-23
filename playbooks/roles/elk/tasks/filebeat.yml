@@ -27,6 +27,11 @@
 - name: Setup Filebeat index
   shell: filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:{{ elasticsearch_port }}"]'
 
+- name: Restart Kibana
+  systemd:
+    name: kibana
+    state: restarted
+
 - name: Setup Filebeat dashboards
   shell: sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:{{ elasticsearch_port }}'] -E setup.kibana.host=localhost:{{ kibana_port }}
 
