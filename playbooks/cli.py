@@ -42,7 +42,8 @@ def _deploy_all():
 @click.option('--ssh-key', '-k', help='SSH key to use for deployment')
 @click.option('--all', '-a', help='Deploy all apps', is_flag=True, default=False)
 @click.option('--init', '-i', help='Initilize vps server', is_flag=True, default=False)
-def deploy(app : str, ssh_key : str, all : bool, init : bool):
+@click.option('--version', '-v', help='version of the app to deploy', required=False)
+def deploy(app : str, ssh_key : str, all : bool, init : bool, version : str):
     """Deploy an app."""
     click.echo()
     if all and app:
@@ -76,7 +77,7 @@ def deploy(app : str, ssh_key : str, all : bool, init : bool):
         return
     click.echo()
     click.echo(c.Fore.BLUE + "Deploying " + c.Style.BRIGHT + app + c.Style.RESET_ALL + c.Fore.BLUE + '...' + c.Fore.RESET)
-    cmd = ['ansible-playbook', f'playbooks/apps/{app}.yml']
+    cmd = ['ansible-playbook', f'playbooks/apps/{app}.yml', '--extra-vars', f'"version={version}"']
     if ssh_key:
         cmd += ['--private-key', ssh_key]
     click.echo()

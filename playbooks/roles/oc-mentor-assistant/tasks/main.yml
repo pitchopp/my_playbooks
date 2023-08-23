@@ -9,6 +9,7 @@
   git:
     repo: "{{ git_repo_url }}"
     dest: "{{ app_folder }}"
+    version: "{{ git_repo_version }}"
     force: yes
   register: git_output
 
