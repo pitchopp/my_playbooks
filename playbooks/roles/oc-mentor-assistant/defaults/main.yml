@@ -9,6 +9,6 @@ static_root: /var/www/{{ app_name }}
 home: "/home/{{ app_user }}"
 app_folder: "{{ home }}/{{ app_name }}"
 git_repo_url: https://{{ githubuser }}:{{ githubpassword }}@github.com/pitchopp/oc-mentor-assistant.git
-git_repo_version: {{ version | default('main') }}
+git_repo_version: "{{ version | default('main') }}"
 # gunicorn_workers: 4
 gunicorn_log_level: debug
