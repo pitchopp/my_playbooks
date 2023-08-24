@@ -48,7 +48,6 @@
   hosts: contabo_vps
   roles:
     - elk
-    - certbot
   vars_files:
     - ../../secrets.yml
   vars:

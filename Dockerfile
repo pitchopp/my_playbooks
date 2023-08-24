@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM debian:bullseye
 
 RUN apt update && apt install -y ca-certificates python3 python3-pip
 COPY full-ca.pem /etc/pki/ca-trust/source/anchors/

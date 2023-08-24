@@ -30,3 +30,7 @@
   register: kibana_admin_user
   become: true
   when: kibana_admin_user is not defined
+
+- name: set up ssl certificate
+  include_role:
+    name: certbot
