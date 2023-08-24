@@ -26,6 +26,8 @@
   template:
     src: templates/.env.j2
     dest: "{{ app_folder }}/.env"
+  tags:
+    - init
 
 - name: "Config poetry"
   become_user: "{{ app_user }}"
@@ -68,7 +70,9 @@
     virtualenv: "{{ venv_path }}"
   register: checksuperuser
   ignore_errors: True
-  changed_when: False      
+  changed_when: False
+  tags:
+    - init 
 
 - name: django create superuser
   django_manage:
@@ -78,16 +82,22 @@
   environment:
     DJANGO_SUPERUSER_PASSWORD: "{{ superuser_password }}"
   when: checksuperuser.failed
+  tags:
+    - init
 
 - name: Copy systemd socket file
   template:
     src: templates/gunicorn.socket.j2
     dest: /etc/systemd/system/{{ app_name }}.socket
+  tags:
+    - init
 
 - name: Copy systemd service file
   template:
     src: templates/gunicorn.service.j2
     dest: /etc/systemd/system/{{ app_name }}.service
+  tags:
+    - init
 
 - name: Enable gunicorn socket
   systemd:
@@ -95,6 +105,8 @@
     state: started
     enabled: yes
     daemon_reload: yes
+  tags:
+    - init
 
 - name: Check {{ app_name }} service status
   become: true
@@ -109,6 +121,8 @@
   template:
     src: templates/nginx.conf.j2
     dest: "/etc/nginx/sites-available/{{ app_name }}"
+  tags:
+    - init
 
 - name: Create symbolic link for Nginx site
   file:
