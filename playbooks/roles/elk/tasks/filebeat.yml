@@ -10,19 +10,11 @@
     dest: /etc/filebeat/filebeat.yml
   notify: Restart Filebeat
 
-- name: Flush handlers
-  meta: flush_handlers
-
 - name: Enable system module
   shell: filebeat modules enable system
 
 - name: Setup Filebeat pipelines
   shell: filebeat setup --pipelines --modules system
-
-- name: Restart Elasticsearch
-  systemd:
-    name: elasticsearch
-    state: restarted
 
 - name: Setup Filebeat index
   shell: filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:{{ elasticsearch_port }}"]'
