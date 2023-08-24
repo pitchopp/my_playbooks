@@ -16,6 +16,11 @@
 - name: Setup Filebeat pipelines
   shell: filebeat setup --pipelines --modules system
 
+- name: Restart Elasticsearch
+  systemd:
+    name: elasticsearch
+    state: restarted
+
 - name: Setup Filebeat index
   shell: filebeat setup --index-management -E output.logstash.enabled=false -E 'output.elasticsearch.hosts=["localhost:{{ elasticsearch_port }}"]'
 
