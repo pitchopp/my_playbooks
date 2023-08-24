@@ -4,6 +4,9 @@
   become: true
   roles:
     - create-user
+  tags:
+    - init
+    - create-user
   vars:
     - username: ocmentorassistant
 
@@ -11,6 +14,9 @@
   hosts: contabo_vps
   roles:
     - staticdev.pyenv
+  tags:
+    - init
+    - python
   vars:
     - pyenv_python_versions:
       - 3.10.6
@@ -22,16 +28,32 @@
   hosts: contabo_vps
   roles:
     - nginx
+  tags:
+    - init
+    - nginx
 
 - name: "Deploy OC Mentor Assistant app"
   hosts: contabo_vps
   roles:
-    - postgresql
-    - poetry
-    - oc-mentor-assistant
-    - certbot
+    - role: postgresql
+      tags:
+        - init
+        - postgresql
+    - role: poetry
+      tags:
+        - init
+        - python
+    - role: oc-mentor-assistant
+      tags:
+        - app
+    - role: certbot
+      tags:
+        - init
+        - certbot
   vars_files:
     - ../../secrets.yml
+  tags:
+    - oc-mentor-assistant
   vars:
     - app_user: ocmentorassistant
     - create_db: true
@@ -47,6 +69,9 @@
 - name: install elk
   hosts: contabo_vps
   roles:
+    - elk
+  tags:
+    - init
     - elk
   vars_files:
     - ../../secrets.yml
