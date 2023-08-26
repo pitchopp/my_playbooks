@@ -29,6 +29,15 @@
   tags:
     - init
 
+- name: create logs folder if not exists
+  file:
+    path: "{{ app_folder }}/logs"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+  tags:
+    - init
+
 - name: "Config poetry"
   become_user: "{{ app_user }}"
   shell:

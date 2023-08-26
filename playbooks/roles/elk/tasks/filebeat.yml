@@ -26,6 +26,10 @@
 
 - name: Setup Filebeat dashboards
   shell: sudo filebeat setup -E output.logstash.enabled=false -E output.elasticsearch.hosts=['localhost:{{ elasticsearch_port }}'] -E setup.kibana.host=localhost:{{ kibana_port }}
+  register: setup_filebeat_index
+  until: setup_filebeat_index.rc == 0
+  retries: 3
+  delay: 5
 
 - name: Start and enable Filebeat service
   systemd:
