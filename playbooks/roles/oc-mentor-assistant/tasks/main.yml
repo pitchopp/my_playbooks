@@ -29,14 +29,13 @@
   tags:
     - init
 
-- name: create logs folder if not exists
+- name: set owernship of logs folder
   file:
     path: "{{ app_folder }}/logs"
     state: directory
     owner: "{{ app_user }}"
     group: "{{ app_user }}"
-  tags:
-    - init
+    recurse: yes
 
 - name: "Config poetry"
   become_user: "{{ app_user }}"
