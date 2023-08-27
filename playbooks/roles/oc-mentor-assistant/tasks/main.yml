@@ -140,6 +140,20 @@
   tags:
     - init
 
+- name: configure logs with logstash
+  template:
+    src: templates/filebeat.j2
+    dest: /etc/filebeat/inputs.d/{{ app_name }}.yml
+  tags:
+    - init
+
+- name: Restart Filebeat
+  systemd:
+    name: filebeat
+    state: restarted
+  tags:
+    - init
+
 - name: Reload NGINX
   service:
     name: nginx

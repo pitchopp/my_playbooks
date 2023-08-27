@@ -1243,9 +1243,9 @@ filebeat.inputs:
 
 # Enable filebeat config reloading
 filebeat.config:
-  #inputs:
-    #enabled: false
-    #path: inputs.d/*.yml
+  inputs:
+    enabled: false
+    path: inputs.d/*.yml
     #reload.enabled: true
     #reload.period: 10s
   modules:
@@ -2836,3 +2836,5 @@ logging.files:
 #features:
 #  fqdn:
 #    enabled: true
+
+filebeat.config.inputs:
