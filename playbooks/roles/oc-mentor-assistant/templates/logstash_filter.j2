@@ -1,6 +1,6 @@
 filter {
     grok {
-        match => { "message" => %{TIMESTAMP_ISO8601:timestamp}::%{LOGLEVEL:loglevel}::%{WORD:module}::%{NUMBER:process:int}::%{NUMBER:thread:int}::%{GREEDYDATA:message} }
+        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}::%{LOGLEVEL:loglevel}::%{WORD:module}::%{NUMBER:process:int}::%{NUMBER:thread:int}::%{GREEDYDATA:message}" }
     }
     json {
         source => "message"
