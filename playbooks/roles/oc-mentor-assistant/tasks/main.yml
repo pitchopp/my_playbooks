@@ -147,6 +147,20 @@
   tags:
     - init
 
+- name: Copy logstash configuration
+  template:
+    src: templates/logstash.conf.j2
+    dest: /etc/logstash/conf.d/{{ app_name }}.conf
+  tags:
+    - init
+  
+- name: Restart Logstash
+  systemd:
+    name: logstash
+    state: restarted
+  tags:
+    - init
+
 - name: Restart Filebeat
   systemd:
     name: filebeat
