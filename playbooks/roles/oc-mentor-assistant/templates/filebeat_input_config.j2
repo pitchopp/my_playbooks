@@ -3,6 +3,7 @@
   enabled: true
   paths:
     - {{ app_folder }}/logs/django.log
-  fields:
-    - app: oc-mentor-assistant
+  tags:
+    - django
+    - oc-mentor-assistant
   scan_frequency: 5s

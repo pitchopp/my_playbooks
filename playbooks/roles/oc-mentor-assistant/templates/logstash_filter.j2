@@ -1,11 +1,14 @@
 filter {
-    grok {
-        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}] %{LOGLEVEL:loglevel}\|%{GREEDYDATA:module}\|%{GREEDYDATA:content}" }
-    }
-    date {
-        locale => "en"
-        match => [ "timestamp", "YYYY-MM-dd HH:mm:ss"]
-        target => "@timestamp"
-        timezone => "America/New_York"
+    if "django" in [tags] and "oc-mentor-assistant" in [tags] {
+        grok {
+            match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}] %{LOGLEVEL:loglevel}\|%{GREEDYDATA:module}\|%{GREEDYDATA:content}" }
+        }
+        date {
+            match => [ "timestamp", "YYYY-MM-dd HH:mm:ss"]
+            target => "@timestamp"
+        }
+        json {
+            source => "content"
+        }
     }
 }
