@@ -1,4 +1,3 @@
-filebeat.inputs:
 - type: filestream
   id: oc-mentor-assistant-django
   enabled: true
@@ -6,3 +5,4 @@ filebeat.inputs:
     - {{ app_folder }}/logs/django.log
   fields:
     - app: oc-mentor-assistant
+  scan_frequency: 5s
