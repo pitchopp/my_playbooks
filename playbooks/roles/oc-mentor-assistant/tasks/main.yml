@@ -142,7 +142,7 @@
 
 - name: configure logs with logstash
   template:
-    src: templates/filebeat.j2
+    src: templates/filebeat_input_config.j2
     dest: /etc/filebeat/inputs.d/{{ app_name }}.yml
   tags:
     - init
@@ -154,16 +154,16 @@
   tags:
     - init
   
-- name: Restart Logstash
+- name: Restart Filebeat
   systemd:
-    name: logstash
+    name: filebeat
     state: restarted
   tags:
     - init
 
-- name: Restart Filebeat
+- name: Restart Logstash
   systemd:
-    name: filebeat
+    name: logstash
     state: restarted
   tags:
     - init

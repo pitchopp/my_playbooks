@@ -1,8 +1,11 @@
 filter {
     grok {
-        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}::%{LOGLEVEL:loglevel}::%{WORD:module}::%{NUMBER:process:int}::%{NUMBER:thread:int}::%{GREEDYDATA:message}" }
+        match => { "message" => "%{TIMESTAMP_ISO8601:timestamp}] %{LOGLEVEL:loglevel}\|%{GREEDYDATA:module}\|%{GREEDYDATA:content}" }
     }
-    json {
-        source => "message"
+    date {
+        locale => "en"
+        match => [ "timestamp", "YYYY-MM-dd HH:mm:ss"]
+        target => "@timestamp"
+        timezone => "America/New_York"
     }
 }

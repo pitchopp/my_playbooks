@@ -1,17 +1,17 @@
 output {
-    if [@metadata][pipeline] {
-      elasticsearch {
-        hosts => ["localhost:{{ elasticsearch_port }}"]
-        manage_template => false
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-        pipeline => "%{[@metadata][pipeline]}"
-      }
-    } else {
-      elasticsearch {
-        hosts => ["localhost:{{ elasticsearch_port }}"]
-        manage_template => false
-        index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
-      }
+  if [@metadata][pipeline] {
+    elasticsearch {
+      hosts => ["localhost:{{ elasticsearch_port }}"]
+      manage_template => false
+      index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+      pipeline => "%{[@metadata][pipeline]}"
+    }
+  } else {
+    elasticsearch {
+      hosts => ["localhost:{{ elasticsearch_port }}"]
+      manage_template => false
+      index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
     }
   }
+}
   

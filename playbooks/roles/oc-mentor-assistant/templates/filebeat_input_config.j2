@@ -1,0 +1,8 @@
+filebeat.inputs:
+- type: filestream
+  id: oc-mentor-assistant-django
+  enabled: true
+  paths:
+    - {{ app_folder }}/logs/django.log
+  fields:
+    - app: oc-mentor-assistant
