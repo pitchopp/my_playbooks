@@ -11,6 +11,7 @@ ExecStart={{ poetry_path }} run gunicorn \
           --access-logfile {{ app_folder }}/logs/gunicorn.access.log \
           --error-logfile {{ app_folder }}/logs/gunicorn.error.log \
           --workers 3 \
+          --timeout 120 \
           --bind unix:/run/{{ app_name }}.sock \
           oc_mentor_assistant.wsgi:application
 
