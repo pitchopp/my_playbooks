@@ -140,7 +140,7 @@
   tags:
     - init
 
-- name: configure logs with logstash
+- name: configure logs with filebeat
   template:
     src: templates/filebeat_input_config.j2
     dest: /etc/filebeat/inputs.d/{{ app_name }}.yml
