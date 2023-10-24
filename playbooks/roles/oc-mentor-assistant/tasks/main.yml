@@ -101,6 +101,14 @@
   tags:
     - init
 
+- name: set stripe webhook secret
+  django_manage:
+    command: shell -c 'from djstripe.models import WebhookEndpoint; wh = WebhookEndpoint.objects.filter(id="{{OCMENTORASSISTANT_DJSTRIPE_WEBHOOK_ID}}"); wh.secret = "{{OCMENTORASSISTANT_DJSTRIPE_WEBHOOK_SECRET}}"; wh.save()'
+    app_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+  tags:
+    - init
+
 - name: Copy systemd socket file
   template:
     src: templates/gunicorn.socket.j2
