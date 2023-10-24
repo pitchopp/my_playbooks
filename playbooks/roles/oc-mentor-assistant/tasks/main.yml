@@ -93,6 +93,14 @@
   tags:
     - init
 
+- name: sync stripe plans and customers
+  django_manage:
+    command: "djstripe_sync_models"
+    app_path: "{{ app_folder }}"
+    virtualenv: "{{ venv_path }}"
+  tags:
+    - init
+
 - name: Copy systemd socket file
   template:
     src: templates/gunicorn.socket.j2
