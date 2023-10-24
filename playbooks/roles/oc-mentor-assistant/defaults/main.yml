@@ -3,7 +3,6 @@ githubuser: "{{ GITHUB_USER }}"
 githubpassword: "{{ GITHUB_PASSWORD }}"
 app_name: oc-mentor-assistant
 superuser_email: amine.sghir@chella.tech
-superuser_username: admin
 superuser_password: "{{ OCMENTORASSISTANT_DJANGO_SUPERUSER_PASSWORD }}"
 static_root: /var/www/{{ app_name }}
 home: "/home/{{ app_user }}"

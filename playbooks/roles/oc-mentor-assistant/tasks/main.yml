@@ -73,7 +73,7 @@
 
 - name: Check if django superuser exists
   django_manage:
-    command: shell -c 'import sys; from django.contrib.auth.models import User; sys.exit(0 if User.objects.filter(username="{{ superuser_username }}").count() > 0 else 1)'
+    command: shell -c 'import sys; from django.contrib.auth import get_user_model; User = get_user_model(); sys.exit(0 if User.objects.filter(email="{{ superuser_email }}").count() > 0 else 1)'
     project_path: "{{ app_folder }}"
     virtualenv: "{{ venv_path }}"
   register: checksuperuser
