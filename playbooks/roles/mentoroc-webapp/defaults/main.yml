@@ -1,0 +1,9 @@
+---
+githubuser: "{{ GITHUB_USER }}"
+githubpassword: "{{ GITHUB_PASSWORD }}"
+app_name: mentoroc-webapp
+home: "/home/{{ app_user }}"
+app_folder: "{{ home }}/{{ app_name }}"
+git_repo_url: https://{{ githubuser }}:{{ githubpassword }}@github.com/pitchopp/mentoroc-webapp.git
+git_repo_version: "{{ version | default('main') }}"
+docker_image_name: "{{ app_name }}"

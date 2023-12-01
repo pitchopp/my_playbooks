@@ -1,0 +1,31 @@
+---
+- name: Create user ocmentorassistant
+  hosts: contabo_vps
+  become: true
+  roles:
+    - create-user
+  tags:
+    - init
+    - create-user
+  vars:
+    - username: mentoroc
+
+- name: Deploy Mentoroc Frontend React app
+  hosts: contabo_vps
+  roles:
+    - role: docker
+      tags:
+        - init
+        - docker
+    - role: mentoroc-webapp
+    - role: certbot
+      tags:
+        - init
+        - certbot
+  vars_files:
+    - ../../secrets.yml
+  vars:
+    - app_user: mentoroc
+    - server_domain: mentoroc.com
+    - certbot_email: contact@mentoroc.com
+    - certbot_domain: "{{ server_domain }}"

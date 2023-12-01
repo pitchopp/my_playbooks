@@ -1,0 +1,65 @@
+---
+- name: Disable git owernship check
+  community.general.git_config:
+    name: safe.directory
+    scope: global
+    value: "{{ app_folder }}"
+
+- name: Clone repository
+  git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ app_folder }}"
+    version: "{{ git_repo_version }}"
+    force: true
+  register: git_output
+
+- name: Set ownership of app folder
+  become: true
+  file:
+    path: "{{ app_folder }}"
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    recurse: true
+  when: git_output.changed
+
+- name: Build Docker Image
+  community.docker.docker_image:
+    build:
+      path: "{{ app_folder }}"
+    name: "{{ docker_image_name }}"
+    source: build
+
+- name: run docker image
+  become: true
+  docker_container:
+    name: "{{ app_name }}"
+    image: "{{ docker_image_name }}"
+    state: started
+    volumes:
+      - "/var/www/html/{{ server_domain }}:/app/build"
+
+- name: chmod -R 755 /var/www/html/{{ server_domain }}
+  become: true
+  shell : chmod -R 755 /var/www/html/{{ server_domain }}
+
+- name: set up nginx config
+  become: true
+  template:
+    src: mentoroc-webapp.nginx.conf
+    dest: "/etc/nginx/sites-available/{{ app_name }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: enable nginx config
+  become: true
+  file:
+    src: "/etc/nginx/sites-available/{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+    state: link
+
+- name: reload nginx
+  become: true
+  service:
+    name: nginx
+    state: reloaded

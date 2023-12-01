@@ -6,9 +6,9 @@
       - python3-certbot-nginx
     state: present
 
-- name: Obtain SSL certificate for domain {{ certbot_domain }}
+- name: Obtain SSL certificate for domain {{ certbot_domain }} and www.{{ certbot_domain }}
   become: true
-  command: certbot --nginx --non-interactive --agree-tos --email {{ certbot_email }} -d {{ certbot_domain }}
+  command: certbot --nginx --non-interactive --agree-tos --email {{ certbot_email }} -d {{ certbot_domain }} -d www.{{ certbot_domain }} --expand
 
 - name: Restart Nginx
   become: true
