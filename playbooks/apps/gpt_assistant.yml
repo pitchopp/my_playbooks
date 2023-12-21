@@ -1,6 +1,6 @@
 ---
 - name: Create user gptassistant
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   roles:
     - create-user
@@ -8,7 +8,7 @@
     - username: gptassistant
 
 - name: Setup pyenv
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - staticdev.pyenv
   vars:
@@ -19,7 +19,7 @@
     - pyenv_env: system
 
 - name: "Deploy GPT Assistant"
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - nginx
     - poetry

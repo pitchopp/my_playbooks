@@ -1,6 +1,6 @@
 ---
 - name: "Deploy chella.tech"
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   roles:
     - create-user

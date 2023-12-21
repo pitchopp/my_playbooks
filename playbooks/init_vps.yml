@@ -1,25 +1,25 @@
 ---
 - name: Setup a basic firewall with ufw
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - firewall
 
 - name: Create user groot
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - create-user
   vars:
     - username: groot
 
 - name: "Install packages and configure server"
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   roles:
     - ssh
     - tools
 
 - name: Add encrypted SSH key to authorized_keys
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   tasks:
     - name: Add SSH key to authorized_keys

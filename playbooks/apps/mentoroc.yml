@@ -1,6 +1,6 @@
 ---
 - name: Create user ocmentorassistant
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   roles:
     - create-user
@@ -11,7 +11,7 @@
     - username: mentoroc
 
 - name: Deploy Mentoroc Frontend React app
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - role: docker
       tags:

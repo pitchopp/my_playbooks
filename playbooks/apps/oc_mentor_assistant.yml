@@ -1,6 +1,6 @@
 ---
 - name: Create user ocmentorassistant
-  hosts: contabo_vps
+  hosts: vpsperso
   become: true
   roles:
     - create-user
@@ -11,7 +11,7 @@
     - username: ocmentorassistant
 
 - name: Setup pyenv
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - staticdev.pyenv
   tags:
@@ -25,7 +25,7 @@
     - pyenv_env: system
 
 - name: Setup nginx
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - nginx
   tags:
@@ -33,7 +33,7 @@
     - nginx
 
 - name: "Deploy OC Mentor Assistant app"
-  hosts: contabo_vps
+  hosts: vpsperso
   roles:
     - role: postgresql
       tags:
@@ -67,7 +67,7 @@
     - certbot_domain: "{{ server_domain }}"
 
 # - name: install elk
-#   hosts: contabo_vps
+#   hosts: vpsperso
 #   roles:
 #     - elk
 #   tags:
